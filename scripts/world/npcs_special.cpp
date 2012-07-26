@@ -29,6 +29,7 @@ EndScriptData
 #include "escort_ai.h"
 #include "ObjectMgr.h"
 #include "GameEventMgr.h"
+#include <sstream>
 
 /* ContentData
 npc_chicken_cluck       100%    support for quest 3861 (Cluck!)
@@ -1053,9 +1054,123 @@ CreatureAI* GetAI_npc_shahram(Creature* pCreature)
 }
 
 
+typedef UNORDERED_MAP<ObjectGuid, uint32> AttackerMap;
+
+struct MANGOS_DLL_DECL npc_training_dummyAI : public Scripted_NoMovementAI
+{
+    npc_training_dummyAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature){}
+
+    AttackerMap m_AttackerMap;
+
+    void Reset(){}
+
+    void DamageTaken(Unit* pDealer, uint32& uiDamage)
+    {
+        if (pDealer->GetTypeId() == TYPEID_PLAYER)
+            m_AttackerMap[pDealer->GetObjectGuid()] = 6000;
+
+        if (m_creature->GetHealthPercent() < 10.0f || m_creature->GetHealthPercent() > 20.0f) // allow players using finishers
+            m_creature->SetHealth(m_creature->GetMaxHealth()/5);
+
+        m_creature->SetTargetGuid(ObjectGuid()); // prevent from rotating
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        for (AttackerMap::iterator itr = m_AttackerMap.begin(); itr != m_AttackerMap.end();)
+        {
+            if (itr->second < diff)
+            {
+                if (Player* pAttacker = m_creature->GetMap()->GetPlayer(itr->first))
+                {
+                    pAttacker->CombatStop(true);
+                    pAttacker->AttackStop(false);
+                    pAttacker->CombatStopWithPets(true);
+                    pAttacker->ClearInCombat();
+                }
+
+                itr = m_AttackerMap.erase(itr);
+
+                if (m_AttackerMap.empty())
+                {
+                    EnterEvadeMode();
+                    m_creature->SetHealth(m_creature->GetMaxHealth());
+                }
+            }
+            else
+            {
+                itr->second -= diff;
+                ++itr;
+            }
+        }
+    }
+};
+
+CreatureAI* GetAI_npc_training_dummy(Creature* pCreature)
+{
+    return new npc_training_dummyAI(pCreature);
+}
+
+bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
+{
+    if (pPlayer->isInCombat())
+    {
+        ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in combat!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return true;
+    }
+    std::stringstream ss;
+    ss << pPlayer->KalimdorCoins;
+    std::string KalimdorCoinFloatString = ss.str();
+    std::string KalimdorCoinString = ("You have %g KalimdorCoins!",KalimdorCoinFloatString);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,KalimdorCoinString.c_str(),    GOSSIP_SENDER_MAIN,1  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Shopping Mall  ",GOSSIP_SENDER_MAIN,2  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Gurubashi Arena",GOSSIP_SENDER_MAIN,3  ,"",0);
+    pPlayer->PlayerTalkClass->SendGossipMenu(1,pCreature->GetObjectGuid());
+    return true;
+}
+
+bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, uint32 action)
+{
+    if (pPlayer->isInCombat())
+    {
+        ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in combat!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return false;
+    }
+
+    if (action == 1)
+    {
+        GossipHello_telenpc(pPlayer,pCreature);
+    }
+    else if (action == 2)
+    {
+        pPlayer->PlayerTalkClass->CloseGossip();
+        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Shopping Mall",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        pPlayer->TeleportTo(0,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
+    }
+    else if (action == 3) // Teleport To: Gurubashi Arena
+    {
+        pPlayer->PlayerTalkClass->CloseGossip();
+        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Gurubashi Arena",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        pPlayer->TeleportTo(0,  -13235.7f,  213.741f,   31.2181f,   1.14919f);
+    }
+    return true;
+}
+
+
 void AddSC_npcs_special()
 {
     Script* pNewScript;
+
+    pNewScript = new Script;
+    pNewScript->Name = "training_dummy";
+    pNewScript->GetAI = &GetAI_npc_training_dummy;
+    pNewScript->RegisterSelf();
+
+    pNewScript                  = new Script;
+    pNewScript->Name            = "npc_teleport1";
+    pNewScript->pGossipHello    = &GossipHello_telenpc;
+    pNewScript->pGossipSelect   = &GossipSelect_telenpc;
+    pNewScript->RegisterSelf();
 
 
     pNewScript = new Script;
@@ -1115,3 +1230,6 @@ void AddSC_npcs_special()
     pNewScript->GetAI = &GetAI_npc_shahram;
     pNewScript->RegisterSelf();
 }
+
+
+

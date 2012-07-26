@@ -64,6 +64,7 @@ patches-*
 *.opensdf
 *.sln.cache
 *.vsp
+*.obj
 ipch
 *.user
 
@@ -79,3 +80,12 @@ cmake_install.cmake
 #
 # MacOS
 .DS_Store
+revision.h
+VC90/ScriptDev0__Win32_Debug/BuildLog.htm
+VC90/ScriptDev0__Win32_Debug/mangosscript.dll.embed.manifest
+VC90/ScriptDev0__Win32_Release/BuildLog.htm
+VC90/ScriptDev0__Win32_Release/mangosscript.dll.intermediate.manifest
+VC90/ScriptDev0__Win32_Release/mangosscript.pch
+VC90/ScriptDev0__Win32_Release/mt.dep
+VC90/ScriptDev0__Win32_Release/vc90.idb
+VC90/ScriptDev0__Win32_Release/vc90.pdb
