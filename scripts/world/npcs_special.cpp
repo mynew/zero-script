@@ -1145,7 +1145,7 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
     {
         pPlayer->PlayerTalkClass->CloseGossip();
         ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Shopping Mall",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
-        pPlayer->TeleportTo(0,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
+        pPlayer->TeleportTo(1,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
     }
     else if (action == 3) // Teleport To: Gurubashi Arena
     {
