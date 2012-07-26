@@ -1121,7 +1121,7 @@ bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
     std::stringstream ss;
     ss << pPlayer->KalimdorCoins;
     std::string KalimdorCoinFloatString = ss.str();
-    std::string KalimdorCoinString = ("You have %s KalimdorCoins!",KalimdorCoinFloatString);
+    std::string KalimdorCoinString = "You have "+KalimdorCoinFloatString+" KalimdorCoins!";
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,KalimdorCoinString.c_str(),    GOSSIP_SENDER_MAIN,1  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Shopping Mall  ",GOSSIP_SENDER_MAIN,2  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Gurubashi Arena",GOSSIP_SENDER_MAIN,3  ,"",0);
