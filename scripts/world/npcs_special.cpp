@@ -1132,6 +1132,7 @@ bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,KalimdorCoinString.c_str(),    GOSSIP_SENDER_MAIN,1  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Shopping Mall  ",GOSSIP_SENDER_MAIN,2  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Gurubashi Arena",GOSSIP_SENDER_MAIN,3  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Reset Talents               ",GOSSIP_SENDER_MAIN,4  ,"",0);
     pPlayer->PlayerTalkClass->SendGossipMenu(1,pCreature->GetObjectGuid());
     return true;
 }
@@ -1164,6 +1165,12 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
         pPlayer->PlayerTalkClass->CloseGossip();
         ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Gurubashi Arena",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
         pPlayer->TeleportTo(0,  -13235.7f,  213.741f,   31.2181f,   1.14919f);
+    }
+    else if (action == 4)
+    {
+        pPlayer->PlayerTalkClass->CloseGossip();
+        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Talents Reset",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        pPlayer->resetTalents(true);
     }
     return true;
 }
