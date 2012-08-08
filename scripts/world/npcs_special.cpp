@@ -1168,10 +1168,22 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
     return true;
 }
 
+bool ItemUse_coinrewarder(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
+{
+    pPlayer->KalimdorCoins += 10;
+    ChatHandler(pPlayer).PSendSysMessage("You were awarded with 10 KalimdorCoins for using this item.");
+    return true;
+}
+
 
 void AddSC_npcs_special()
 {
     Script* pNewScript;
+
+    pNewScript = new Script;
+    pNewScript->Name            = "coinreward";
+    pNewScript->pItemUse        = &ItemUse_coinrewarder;
+    pNewScript->RegisterSelf();
 
     pNewScript = new Script;
     pNewScript->Name = "training_dummy";
