@@ -1113,6 +1113,7 @@ CreatureAI* GetAI_npc_training_dummy(Creature* pCreature)
 
 bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
 {
+    pPlayer->UpdateSkillsToMaxSkillsForLevel();
     if (pPlayer->isInCombat())
     {
         ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in combat!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
