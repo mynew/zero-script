@@ -1172,7 +1172,7 @@ bool ItemUse_coinrewarder(Player* pPlayer, Item* pItem, SpellCastTargets const& 
 {
     pPlayer->KalimdorCoins += 10;
     ChatHandler(pPlayer).PSendSysMessage("You were awarded with 10 KalimdorCoins for using this item.");
-    return true;
+    return false;
 }
 
 
