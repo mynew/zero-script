@@ -1118,6 +1118,12 @@ bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
         ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in combat!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
         return true;
     }
+    else if (pPlayer->HasStealthAura())
+    {
+        ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in stealth!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return true;
+    }
+
     std::stringstream ss;
     ss << pPlayer->KalimdorCoins;
     std::string KalimdorCoinFloatString = ss.str();
@@ -1134,6 +1140,11 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
     if (pPlayer->isInCombat())
     {
         ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in combat!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        return false;
+    }
+    else if (pPlayer->HasStealthAura())
+    {
+        ChatHandler(pPlayer).PSendSysMessage("%s[Teleporter]%s You are in stealth!",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
         return false;
     }
 
