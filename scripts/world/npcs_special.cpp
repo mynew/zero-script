@@ -1183,6 +1183,37 @@ bool ItemUse_coinrewarder(Player* pPlayer, Item* pItem, SpellCastTargets const& 
     return false;
 }
 
+bool ItemUse_serverguide(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
+{
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Which ingame commands to i need to know about? ",GOSSIP_SENDER_MAIN,1  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"How does the ranking system work?              ",GOSSIP_SENDER_MAIN,2  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"What is kalimdorcoins?                         ",GOSSIP_SENDER_MAIN,3  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"How do i get kalimdorcoins?                    ",GOSSIP_SENDER_MAIN,4  ,"",0);
+    pPlayer->PlayerTalkClass->SendGossipMenu(1,pPlayer->GetObjectGuid());
+    return false;
+}
+
+bool GossipSelect_serverguide(Player *pPlayer, Creature *pCreature, uint32 sender, uint32 action)
+{
+    if (action == 1)
+    {
+        pPlayer->PlayerTalkClass->SendGossipMenu(3,pPlayer->GetObjectGuid());
+    }
+    else if (action == 2)
+    {
+        pPlayer->PlayerTalkClass->SendGossipMenu(4,pPlayer->GetObjectGuid());
+    }
+    else if (action == 3)
+    {
+        pPlayer->PlayerTalkClass->SendGossipMenu(5,pPlayer->GetObjectGuid());
+    }
+    else if (action == 4)
+    {
+        pPlayer->PlayerTalkClass->SendGossipMenu(6,pPlayer->GetObjectGuid());
+    }
+    return true;
+}
+
 
 void AddSC_npcs_special()
 {
@@ -1191,6 +1222,7 @@ void AddSC_npcs_special()
     pNewScript = new Script;
     pNewScript->Name            = "coinreward";
     pNewScript->pItemUse        = &ItemUse_coinrewarder;
+    pNewScript->pGossipSelect   = &GossipSelect_serverguide;
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
