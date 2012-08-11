@@ -1129,6 +1129,40 @@ bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
     ss << pPlayer->KalimdorCoins;
     std::string KalimdorCoinFloatString = ss.str();
     std::string KalimdorCoinString = "You have "+KalimdorCoinFloatString+" KalimdorCoins!";
+    bool saveplr = false;
+    if (int32 wsgmarkcount = pPlayer->GetItemCount(20558))
+    {
+        if (wsgmarkcount != 0)
+        {
+            pPlayer->DestroyItemCount(20558, -wsgmarkcount, true, false);
+            pPlayer->KalimdorCoins += wsgmarkcount*10;
+            ChatHandler(pPlayer).PSendSysMessage("You got rewarded with %u KalimdorCoins for your WSG marks",wsgmarkcount*10);
+            saveplr = true;
+        }
+    }
+    if (int32 abmarkcount = pPlayer->GetItemCount(20559))
+    {
+        if (abmarkcount != 0)
+        {
+            pPlayer->DestroyItemCount(20559, -abmarkcount, true, false);
+            pPlayer->KalimdorCoins += abmarkcount*15;
+            ChatHandler(pPlayer).PSendSysMessage("You got rewarded with %u KalimdorCoins for your AB marks",abmarkcount*15);
+            saveplr = true;
+        }
+    }
+    if (int32 avmarkcount = pPlayer->GetItemCount(20560))
+    {
+        if (avmarkcount != 0)
+        {
+            pPlayer->DestroyItemCount(20560, -avmarkcount, true, false);
+            pPlayer->KalimdorCoins += avmarkcount*15;
+            ChatHandler(pPlayer).PSendSysMessage("You got rewarded with %u KalimdorCoins for your AB marks",avmarkcount*20);
+            saveplr = true;
+        }
+    }
+    if (saveplr)
+        pPlayer->SaveToDB();
+
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,KalimdorCoinString.c_str(),    GOSSIP_SENDER_MAIN,1  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Shopping Mall  ",GOSSIP_SENDER_MAIN,2  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Gurubashi Arena",GOSSIP_SENDER_MAIN,3  ,"",0);
