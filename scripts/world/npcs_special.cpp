@@ -1217,6 +1217,14 @@ bool ItemUse_coinrewarder(Player* pPlayer, Item* pItem, SpellCastTargets const& 
     return false;
 }
 
+bool ItemUse_donationreward1(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
+{
+    uint32 howlong = 60*60*24*7;
+    pPlayer->GivePremium(howlong, 3);
+    ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for one week! (Relog might be required)");
+    return false;
+}
+
 bool ItemUse_serverguide(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
 {
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Which ingame commands to i need to know about? ",GOSSIP_SENDER_MAIN,1  ,"",0);
@@ -1256,7 +1264,11 @@ void AddSC_npcs_special()
     pNewScript = new Script;
     pNewScript->Name            = "coinreward";
     pNewScript->pItemUse        = &ItemUse_coinrewarder;
-    pNewScript->pGossipSelect   = &GossipSelect_serverguide;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name            = "donationreward1";
+    pNewScript->pItemUse        = &ItemUse_donationreward1;
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
