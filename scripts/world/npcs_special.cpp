@@ -1241,11 +1241,11 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
             pPlayer->SaveToDB();
         }
     }
-    else if (action == 3) // Teleport To: Slacker Area Of Doom
+    else if (action == 6) // Teleport To: Slacker Area Of Doom
     {
         pPlayer->PlayerTalkClass->CloseGossip();
-        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Gurubashi Arena",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
-        pPlayer->TeleportTo(0,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
+        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Slacker Area Of Doom",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        pPlayer->TeleportTo(1,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
     }
     return true;
 }
