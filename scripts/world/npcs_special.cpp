@@ -1166,6 +1166,7 @@ bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,KalimdorCoinString.c_str(),    GOSSIP_SENDER_MAIN,1  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Shopping Mall  ",GOSSIP_SENDER_MAIN,2  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Gurubashi Arena",GOSSIP_SENDER_MAIN,3  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Slacker Area Of Doom",GOSSIP_SENDER_MAIN,6  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Reset Talents               ",GOSSIP_SENDER_MAIN,4  ,"",0);
     if (pPlayer->getLevel() == 60)
         pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Twink               ",GOSSIP_SENDER_MAIN,5  ,"",0);
@@ -1239,6 +1240,12 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
             pPlayer->InitTalentForLevel();
             pPlayer->SaveToDB();
         }
+    }
+    else if (action == 3) // Teleport To: Slacker Area Of Doom
+    {
+        pPlayer->PlayerTalkClass->CloseGossip();
+        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Gurubashi Arena",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        pPlayer->TeleportTo(0,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
     }
     return true;
 }
