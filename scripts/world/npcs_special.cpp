@@ -1166,7 +1166,13 @@ bool GossipHello_telenpc(Player *pPlayer, Creature *pCreature)
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,KalimdorCoinString.c_str(),    GOSSIP_SENDER_MAIN,1  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Shopping Mall  ",GOSSIP_SENDER_MAIN,2  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Gurubashi Arena",GOSSIP_SENDER_MAIN,3  ,"",0);
+    pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Teleport To: Slacker Area Of Doom",GOSSIP_SENDER_MAIN,6  ,"",0);
     pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Reset Talents               ",GOSSIP_SENDER_MAIN,4  ,"",0);
+    if (pPlayer->getLevel() == 60)
+        pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Twink               ",GOSSIP_SENDER_MAIN,5  ,"",0);
+    else
+        pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(2,"Untwink               ",GOSSIP_SENDER_MAIN,5  ,"",0);
+
     pPlayer->PlayerTalkClass->SendGossipMenu(1,pCreature->GetObjectGuid());
     return true;
 }
@@ -1206,6 +1212,41 @@ bool GossipSelect_telenpc(Player *pPlayer, Creature *pCreature, uint32 sender, u
         ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Talents Reset",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
         pPlayer->resetTalents(true);
     }
+    else if (action == 5)
+    {
+        if (pPlayer->getLevel() == 60)
+        {
+            for(int i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
+            {
+                if(Item *pItem = pPlayer->GetItemByPos( INVENTORY_SLOT_BAG_0, i ))
+                {
+                    ChatHandler(pPlayer).PSendSysMessage("You must not have any items equipped while going twinking");
+                    return true;
+                }
+            }
+            pPlayer->SetLevel(19);
+            pPlayer->resetSpells();
+            pPlayer->resetTalents(true);
+            pPlayer->InitStatsForLevel(true);
+            pPlayer->InitTalentForLevel();
+            pPlayer->SaveToDB();
+        }
+        else
+        {
+            pPlayer->SetLevel(60);
+            pPlayer->resetSpells();
+            pPlayer->resetTalents(true);
+            pPlayer->InitStatsForLevel(true);
+            pPlayer->InitTalentForLevel();
+            pPlayer->SaveToDB();
+        }
+    }
+    else if (action == 6) // Teleport To: Slacker Area Of Doom
+    {
+        pPlayer->PlayerTalkClass->CloseGossip();
+        ChatHandler(pPlayer->GetSession()).PSendSysMessage("%s[Teleporter]%s Welcome to Slacker Area Of Doom",MSG_COLOR_MAGENTA,MSG_COLOR_WHITE);
+        pPlayer->TeleportTo(1,  -11329.0f,  -4713.14f,   7.0f,   3.75861f);
+    }
     return true;
 }
 
@@ -1219,9 +1260,25 @@ bool ItemUse_coinrewarder(Player* pPlayer, Item* pItem, SpellCastTargets const& 
 
 bool ItemUse_donationreward1(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
 {
-    uint32 howlong = 60*60*24*7;
+    uint32 howlong = 60*60*24*7; // 1 Week
     pPlayer->GivePremium(howlong, 3);
-    ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for one week! (Relog might be required)");
+    ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for one week! (Account relog required for system to take affect)");
+    return false;
+}
+
+bool ItemUse_donationreward2(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
+{
+    uint32 howlong = 60*60*24; // 1 Day
+    pPlayer->GivePremium(howlong, 3);
+    ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for 1 day! (Account relog required for system to take affect)");
+    return false;
+}
+
+bool ItemUse_donationreward3(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
+{
+    uint32 howlong = 60*60*24*2; // 2 Days
+    pPlayer->GivePremium(howlong, 3);
+    ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for 2 days! (Account relog required for system to take affect)");
     return false;
 }
 
@@ -1269,6 +1326,16 @@ void AddSC_npcs_special()
     pNewScript = new Script;
     pNewScript->Name            = "donationreward1";
     pNewScript->pItemUse        = &ItemUse_donationreward1;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name            = "donationreward2";
+    pNewScript->pItemUse        = &ItemUse_donationreward2;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name            = "donationreward3";
+    pNewScript->pItemUse        = &ItemUse_donationreward3;
     pNewScript->RegisterSelf();
 
     pNewScript = new Script;
