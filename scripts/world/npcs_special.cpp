@@ -1254,6 +1254,7 @@ bool ItemUse_coinrewarder(Player* pPlayer, Item* pItem, SpellCastTargets const& 
 {
     pPlayer->KalimdorCoins += 10;
     ChatHandler(pPlayer).PSendSysMessage("You were awarded with 10 KalimdorCoins for using this item.");
+    pPlayer->DestroyItemCount(pItem->GetEntry(),1,true);
     pPlayer->SaveToDB();
     return false;
 }
@@ -1263,6 +1264,7 @@ bool ItemUse_donationreward1(Player* pPlayer, Item* pItem, SpellCastTargets cons
     uint32 howlong = 60*60*24*7; // 1 Week
     pPlayer->GivePremium(howlong, 3);
     ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for one week! (Account relog required for system to take affect)");
+    pPlayer->DestroyItemCount(pItem->GetEntry(),1,true);
     return false;
 }
 
@@ -1271,6 +1273,7 @@ bool ItemUse_donationreward2(Player* pPlayer, Item* pItem, SpellCastTargets cons
     uint32 howlong = 60*60*24; // 1 Day
     pPlayer->GivePremium(howlong, 3);
     ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for 1 day! (Account relog required for system to take affect)");
+    pPlayer->DestroyItemCount(pItem->GetEntry(),1,true);
     return false;
 }
 
@@ -1279,6 +1282,7 @@ bool ItemUse_donationreward3(Player* pPlayer, Item* pItem, SpellCastTargets cons
     uint32 howlong = 60*60*24*2; // 2 Days
     pPlayer->GivePremium(howlong, 3);
     ChatHandler(pPlayer).PSendSysMessage("You will now earn 2HK's and DOUBLE coins per kill for 2 days! (Account relog required for system to take affect)");
+    pPlayer->DestroyItemCount(pItem->GetEntry(),1,true);
     return false;
 }
 
